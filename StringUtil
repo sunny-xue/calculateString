@@ -1,0 +1,79 @@
+/**
+  	 * Get a new string split by a rule, e.g:"This title is so long ... split done."
+		 * @param source the target string.
+		 * @param displayObject e.g:Label, TextInptut.
+		 * @param rule default 0 split the string in the middle.
+		 * */
+public static function splitStrByRule(source:String, displayObject:Object, rule:Number = 0):String
+{
+			if(source == null)return null;
+			
+			var limitSize:Number = displayObject.width - 4;
+			
+			var target:String = source;
+			
+			if(measureString(target,displayObject) <= limitSize)return target;
+			
+			var startIndex:int;
+			var endIndex:int;
+			
+			var replaceStr:String = "...";
+			
+			var replaceStrWidth:Number = measureString(replaceStr, displayObject);
+			
+			limitSize = limitSize - replaceStrWidth;
+			
+			if(rule == 0)
+			{
+				var arr:Array = target.split(" ");
+				
+				var displaySize:int;
+				
+				for(var i:int = 0, len:int = arr.length; i < len; i ++)
+				{
+					displaySize += (measureString(String(arr[i]) + " ", displayObject));
+					
+					if(displaySize > limitSize)
+					{
+						startIndex = i-1;
+						endIndex = len - startIndex;
+						break;
+					}else
+					{
+						displaySize+= (measureString(String(arr[len -i - 1]) + " ",displayObject));
+						if(displaySize > limitSize)
+						{
+							startIndex = i;
+							endIndex = len - startIndex;
+							break;
+						}
+					}
+				}
+				
+				arr.splice(startIndex+1, endIndex - startIndex - 1, replaceStr);
+				
+				target = arr.join(" ");
+			}
+			
+			if(rule < 0)
+			{
+			}
+			
+			if(rule > 0)
+			{
+			}
+			
+			return target;
+		}
+		
+		public static function measureString(str:String,container:Object = null):Number 
+		{		
+			if(container == null)
+			{
+				container = new Label();
+				container.regenerateStyleCache(false);
+			}
+			
+			var lineMetrics:TextLineMetrics = container.measureText(str);
+			return lineMetrics.width;     
+		}
